@@ -9,7 +9,14 @@ builder.Services.AddDbContext<AppIdentityDbContext>(opt =>
     opt.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
 
-builder.Services.AddIdentity<AppUser, IdentityRole>()
+builder.Services.AddIdentity<AppUser, IdentityRole>(opt =>
+    {
+        opt.Password.RequiredLength = 4;
+        opt.Password.RequireNonAlphanumeric = false;
+        opt.Password.RequireLowercase = false;
+        opt.Password.RequireUppercase = false;
+        opt.Password.RequireDigit = false;
+    })
     .AddEntityFrameworkStores<AppIdentityDbContext>();
 
 builder.Services.AddMvc();
