@@ -6,6 +6,7 @@ namespace NetCoreIdentity.Models.ViewModel
     {
         [Required(ErrorMessage = "E-posta adresini girmek zorunludur.")]
         [Display(Name = "E-posta")]
+        [EmailAddress]
         public string Email { get; set; }
 
         [Required(ErrorMessage = "Parola girmek zorunludur.")]
