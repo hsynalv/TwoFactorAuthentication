@@ -12,6 +12,11 @@ builder.Services.AddDbContext<AppIdentityDbContext>(opt =>
 
 builder.Services.AddIdentity<AppUser, IdentityRole>(opt =>
     {
+
+        opt.User.RequireUniqueEmail = true;
+        opt.User.AllowedUserNameCharacters = "abcçdefgðhiýjklmnoöpqrsþtuüvwxyzABCÇDEFGHIÝJKLMNOÖPQRSÞTUÜVWXYZ0123456789-._";
+
+
         opt.Password.RequiredLength = 4;
         opt.Password.RequireNonAlphanumeric = false;
         opt.Password.RequireLowercase = false;
