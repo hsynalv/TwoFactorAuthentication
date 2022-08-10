@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using NetCoreIdentity.Helper;
 using NetCoreIdentity.Models;
 using NetCoreIdentity.Models.ViewModel;
 
@@ -23,6 +24,8 @@ namespace NetCoreIdentity.Controllers
             return View();
         }
 
+        #region LogIn
+
         public IActionResult LogIn(string retunUrl)
         {
             TempData["retunUrl"] = retunUrl;
@@ -39,21 +42,24 @@ namespace NetCoreIdentity.Controllers
                 {
                     if (await _userManager.IsLockedOutAsync(user))
                     {
-                        ModelState.AddModelError("", "Hesabınız bir süreliğine kilitlenmiştir. Lütfen daha sonra tekrar deneyiniz.");
+                        ModelState.AddModelError("",
+                            "Hesabınız bir süreliğine kilitlenmiştir. Lütfen daha sonra tekrar deneyiniz.");
 
                         return View(loginViewModel);
                     }
 
                     await _signInManager.SignOutAsync();
-                    var result = await _signInManager.PasswordSignInAsync(user, loginViewModel.Password, loginViewModel.RememberMe, false);
+                    var result = await _signInManager.PasswordSignInAsync(user, loginViewModel.Password,
+                        loginViewModel.RememberMe, false);
                     if (result.Succeeded)
                     {
                         await _userManager.ResetAccessFailedCountAsync(user);
-                        
+
                         if (TempData["retunUrl"] != null)
                         {
                             return Redirect(TempData["retunUrl"].ToString());
                         }
+
                         return RedirectToAction("Index", "Member");
                     }
                     else
@@ -64,9 +70,11 @@ namespace NetCoreIdentity.Controllers
                         ModelState.AddModelError("", $" {fail} kez başarısız giriş.");
                         if (fail == 3)
                         {
-                            await _userManager.SetLockoutEndDateAsync(user, new System.DateTimeOffset(DateTime.Now.AddMinutes(20)));
+                            await _userManager.SetLockoutEndDateAsync(user,
+                                new DateTimeOffset(DateTime.Now.AddMinutes(20)));
 
-                            ModelState.AddModelError("", "Hesabınız 3 başarısız girişten dolayı 20 dakika süreyle kitlenmiştir. Lütfen daha sonra tekrar deneyiniz.");
+                            ModelState.AddModelError("",
+                                "Hesabınız 3 başarısız girişten dolayı 20 dakika süreyle kitlenmiştir. Lütfen daha sonra tekrar deneyiniz.");
                         }
                         else
                         {
@@ -75,16 +83,21 @@ namespace NetCoreIdentity.Controllers
                     }
                 }
             }
-            ModelState.AddModelError("","Geçersiz Kullanıcı Adı veya Parola");
+
+            ModelState.AddModelError("", "Geçersiz Kullanıcı Adı veya Parola");
             return View();
         }
+
+        #endregion
+
+        #region SignUp
 
         public IActionResult SignUp()
         {
             return View();
         }
 
-        
+
         [HttpPost]
         public async Task<IActionResult> SignUp(UserViewModel user)
         {
@@ -106,13 +119,92 @@ namespace NetCoreIdentity.Controllers
                 {
                     foreach (var err in result.Errors)
                     {
-                        ModelState.AddModelError("",err.Description);
+                        ModelState.AddModelError("", err.Description);
                     }
                 }
 
             }
+
             return View(user);
         }
 
+        #endregion
+
+        public IActionResult ResetPassword()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ResetPassword(PasswordResetViewModel viewModel)
+        {
+            var user = await _userManager.FindByEmailAsync(viewModel.Email);
+
+            if (user != null)
+            {
+                string passwordResetToken = await _userManager.GeneratePasswordResetTokenAsync(user);
+
+                string passwordResetLink = Url.Action("ResetPasswordConfirm", "Home",
+                    new { userId = user.Id, token = passwordResetToken }, Request.Scheme);
+
+                PasswordReset.SendPasswordResetEmail(passwordResetLink, viewModel.Email);
+
+                ViewBag.status = "Parola sıfırlama linki gönderildi.";
+            }
+            else
+            {
+                ModelState.AddModelError("", "Sistemde kayıtlı e-posta adresi bulunamamıştır");
+            }
+
+
+
+            return View(viewModel);
+        }
+
+        public IActionResult ResetPasswordConfirm(string userId, string token)
+        {
+            TempData["userId"] = userId;
+            TempData["token"] = token;
+
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ResetPasswordConfirm(
+            [Bind("PasswordNew")] PasswordResetViewModel passwordResetViewModel)
+        {
+            string token = TempData["token"].ToString();
+            string userId = TempData["userId"].ToString();
+
+            AppUser user = await _userManager.FindByIdAsync(userId);
+
+            if (user != null)
+            {
+                IdentityResult result =
+                    await _userManager.ResetPasswordAsync(user, token, passwordResetViewModel.PasswordNew);
+
+                if (result.Succeeded)
+                {
+                    await _userManager.UpdateSecurityStampAsync(user);
+
+                    ViewBag.status = "success";
+                }
+                else
+                {
+                    foreach (var item in result.Errors)
+                    {
+                        ModelState.AddModelError("", item.Description);
+                    }
+                }
+            }
+            else
+            {
+                ModelState.AddModelError("", "hata meydana gelmiştir. Lütfen daha sonra tekrar deneyiniz.");
+            }
+
+            return View(passwordResetViewModel);
+        }
+
+        
     }
 }

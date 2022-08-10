@@ -27,7 +27,8 @@ builder.Services.AddIdentity<AppUser, IdentityRole>(opt =>
         opt.Password.RequireDigit = false;
     })
     .AddPasswordValidator<CustomPasswordValidator>()
-    .AddEntityFrameworkStores<AppIdentityDbContext>();
+    .AddEntityFrameworkStores<AppIdentityDbContext>()
+    .AddDefaultTokenProviders();
 #endregion
 
 #region CookieAuthenticationOptions 2. sýrada olmalý.
