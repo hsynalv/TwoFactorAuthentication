@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using NetCoreIdentity.CustomValidation;
 using NetCoreIdentity.Models;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -17,6 +18,7 @@ builder.Services.AddIdentity<AppUser, IdentityRole>(opt =>
         opt.Password.RequireUppercase = false;
         opt.Password.RequireDigit = false;
     })
+    .AddPasswordValidator<CustomPasswordValidator>()
     .AddEntityFrameworkStores<AppIdentityDbContext>();
 
 builder.Services.AddMvc();
