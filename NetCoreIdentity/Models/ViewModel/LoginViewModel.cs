@@ -14,5 +14,7 @@ namespace NetCoreIdentity.Models.ViewModel
         [MinLength(4, ErrorMessage = "Parola en az 4 karakter olmalıdır.")]
         public string Password { get; set; }
 
+        public bool RememberMe { get; set; }
+
     }
 }

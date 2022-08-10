@@ -37,7 +37,7 @@ namespace NetCoreIdentity.Controllers
                 if (user != null)
                 {
                     await _signInManager.SignOutAsync();
-                    var result = await _signInManager.PasswordSignInAsync(user, model.Password, false, false);
+                    var result = await _signInManager.PasswordSignInAsync(user, model.Password, model.RememberMe, false);
                     if (result.Succeeded)
                     {
                         if (TempData["retunUrl"] != null)
