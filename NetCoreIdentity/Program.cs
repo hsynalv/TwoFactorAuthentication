@@ -17,7 +17,6 @@ CookieBuilder cookieBuilder = new CookieBuilder()
 {
     Name = "MyCookie",
     HttpOnly = true,
-    Expiration = TimeSpan.FromDays(30),
     //SameSite = SameSiteMode.Strict  => Bankacýlýk gibi hassas uygulamalarda kullanýlabilir. google.com da giriþ yapýnca destek.google.com da da giriþ yapmamýzý ister. Bkz:csrf
     SameSite = SameSiteMode.Lax,
     SecurePolicy = CookieSecurePolicy.SameAsRequest
@@ -27,7 +26,8 @@ CookieBuilder cookieBuilder = new CookieBuilder()
 builder.Services.ConfigureApplicationCookie(opt =>
 {
     opt.Cookie = cookieBuilder;
-    opt.LoginPath = new PathString("/Account/Login");
+    opt.LoginPath = new PathString("/Home/Login");
+    opt.ExpireTimeSpan = TimeSpan.FromDays(30);
     //opt.LogoutPath = new PathString("/Account/Logout");
     //opt.AccessDeniedPath = new PathString("/Account/AccessDenied");
     opt.SlidingExpiration = true;
