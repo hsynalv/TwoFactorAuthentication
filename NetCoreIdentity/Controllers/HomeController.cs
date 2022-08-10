@@ -10,6 +10,7 @@ namespace NetCoreIdentity.Controllers
 
         private readonly UserManager<AppUser> _userManager;
         private readonly SignInManager<AppUser> _signInManager;
+        private LoginViewModel _loginViewModel;
 
         public HomeController(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager)
         {
@@ -29,22 +30,48 @@ namespace NetCoreIdentity.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> LogIn(LoginViewModel model)
+        public async Task<IActionResult> LogIn(LoginViewModel loginViewModel)
         {
             if (ModelState.IsValid)
             {
-                var user = await _userManager.FindByEmailAsync(model.Email);
+                var user = await _userManager.FindByEmailAsync(loginViewModel.Email);
                 if (user != null)
                 {
+                    if (await _userManager.IsLockedOutAsync(user))
+                    {
+                        ModelState.AddModelError("", "Hesabınız bir süreliğine kilitlenmiştir. Lütfen daha sonra tekrar deneyiniz.");
+
+                        return View(loginViewModel);
+                    }
+
                     await _signInManager.SignOutAsync();
-                    var result = await _signInManager.PasswordSignInAsync(user, model.Password, model.RememberMe, false);
+                    var result = await _signInManager.PasswordSignInAsync(user, loginViewModel.Password, loginViewModel.RememberMe, false);
                     if (result.Succeeded)
                     {
+                        await _userManager.ResetAccessFailedCountAsync(user);
+                        
                         if (TempData["retunUrl"] != null)
                         {
                             return Redirect(TempData["retunUrl"].ToString());
                         }
                         return RedirectToAction("Index", "Member");
+                    }
+                    else
+                    {
+                        await _userManager.AccessFailedAsync(user);
+
+                        int fail = await _userManager.GetAccessFailedCountAsync(user);
+                        ModelState.AddModelError("", $" {fail} kez başarısız giriş.");
+                        if (fail == 3)
+                        {
+                            await _userManager.SetLockoutEndDateAsync(user, new System.DateTimeOffset(DateTime.Now.AddMinutes(20)));
+
+                            ModelState.AddModelError("", "Hesabınız 3 başarısız girişten dolayı 20 dakika süreyle kitlenmiştir. Lütfen daha sonra tekrar deneyiniz.");
+                        }
+                        else
+                        {
+                            ModelState.AddModelError("", "Email adresiniz veya şifreniz yanlış.");
+                        }
                     }
                 }
             }
