@@ -22,8 +22,9 @@ namespace NetCoreIdentity.Controllers
             return View();
         }
 
-        public IActionResult LogIn()
+        public IActionResult LogIn(string retunUrl)
         {
+            TempData["retunUrl"] = retunUrl;
             return View();
         }
 
@@ -39,6 +40,10 @@ namespace NetCoreIdentity.Controllers
                     var result = await _signInManager.PasswordSignInAsync(user, model.Password, false, false);
                     if (result.Succeeded)
                     {
+                        if (TempData["retunUrl"] != null)
+                        {
+                            return Redirect(TempData["retunUrl"].ToString());
+                        }
                         return RedirectToAction("Index", "Member");
                     }
                 }
