@@ -11,7 +11,26 @@ builder.Services.AddDbContext<AppIdentityDbContext>(opt =>
 });
 
 
-#region CookieAuthenticationOptions
+
+#region IdentityServer4  1. sýrada olmalý
+builder.Services.AddIdentity<AppUser, IdentityRole>(opt =>
+    {
+
+        opt.User.RequireUniqueEmail = true;
+        opt.User.AllowedUserNameCharacters = "abcçdefgðhiýjklmnoöpqrsþtuüvwxyzABCÇDEFGHIÝJKLMNOÖPQRSÞTUÜVWXYZ0123456789-._";
+
+
+        opt.Password.RequiredLength = 4;
+        opt.Password.RequireNonAlphanumeric = false;
+        opt.Password.RequireLowercase = false;
+        opt.Password.RequireUppercase = false;
+        opt.Password.RequireDigit = false;
+    })
+    .AddPasswordValidator<CustomPasswordValidator>()
+    .AddEntityFrameworkStores<AppIdentityDbContext>();
+#endregion
+
+#region CookieAuthenticationOptions 2. sýrada olmalý.
 
 CookieBuilder cookieBuilder = new CookieBuilder()
 {
@@ -33,28 +52,7 @@ builder.Services.ConfigureApplicationCookie(opt =>
     opt.SlidingExpiration = true;
 });
 
-#endregion
-
-
-#region IdentityServer4
-builder.Services.AddIdentity<AppUser, IdentityRole>(opt =>
-    {
-
-        opt.User.RequireUniqueEmail = true;
-        opt.User.AllowedUserNameCharacters = "abcçdefgðhiýjklmnoöpqrsþtuüvwxyzABCÇDEFGHIÝJKLMNOÖPQRSÞTUÜVWXYZ0123456789-._";
-
-
-        opt.Password.RequiredLength = 4;
-        opt.Password.RequireNonAlphanumeric = false;
-        opt.Password.RequireLowercase = false;
-        opt.Password.RequireUppercase = false;
-        opt.Password.RequireDigit = false;
-    })
-    .AddPasswordValidator<CustomPasswordValidator>()
-    .AddEntityFrameworkStores<AppIdentityDbContext>();
-#endregion
-
-
+#endregion 
 
 builder.Services.AddMvc();
 
