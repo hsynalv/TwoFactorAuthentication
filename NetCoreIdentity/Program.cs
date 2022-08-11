@@ -48,7 +48,7 @@ builder.Services.ConfigureApplicationCookie(opt =>
     opt.Cookie = cookieBuilder;
     opt.LoginPath = new PathString("/Home/Login");
     opt.ExpireTimeSpan = TimeSpan.FromDays(30);
-    //opt.LogoutPath = new PathString("/Account/Logout");
+    opt.LogoutPath = new PathString("/Member/LogOut");
     //opt.AccessDeniedPath = new PathString("/Account/AccessDenied");
     opt.SlidingExpiration = true;
 });

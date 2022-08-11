@@ -115,5 +115,10 @@ namespace NetCoreIdentity.Controllers
 
             return View(userViewModel);
         }
+
+        public void LogOut()
+        {
+            signInManager.SignOutAsync();
+        }
     }
 }
