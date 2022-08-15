@@ -15,6 +15,11 @@ namespace NetCoreIdentity.Controllers
 
         public IActionResult Index()
         {
+            return View();
+        }
+
+        public IActionResult Users()
+        {
             return View(_userManager.Users.ToList());
         }
     }

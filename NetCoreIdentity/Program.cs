@@ -51,6 +51,7 @@ builder.Services.ConfigureApplicationCookie(opt =>
     opt.LogoutPath = new PathString("/Member/LogOut");
     //opt.AccessDeniedPath = new PathString("/Account/AccessDenied");
     opt.SlidingExpiration = true;
+    opt.AccessDeniedPath = new PathString("/Member/AccessDenied");
 });
 
 #endregion 

@@ -136,5 +136,10 @@ namespace NetCoreIdentity.Controllers
         {
             _signInManager.SignOutAsync();
         }
+
+        public IActionResult AccessDenied()
+        {
+            return View();
+        }
     }
 }
