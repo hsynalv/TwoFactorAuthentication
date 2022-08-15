@@ -12,7 +12,7 @@ using NetCoreIdentity.Models;
 namespace NetCoreIdentity.Migrations
 {
     [DbContext(typeof(AppIdentityDbContext))]
-    [Migration("20220809121402_initial")]
+    [Migration("20220815105545_initial")]
     partial class initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

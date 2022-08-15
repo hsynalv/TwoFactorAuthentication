@@ -1,21 +1,42 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using NetCoreIdentity.Enums;
 
 namespace NetCoreIdentity.Models.ViewModel
 {
     public class UserViewModel
     {
-        [Required(ErrorMessage = "User name is required")]
+        [Required(ErrorMessage = "Kullanıcı ismi gerekldir.")]
+        [Display(Name = "Kullanıcı Adı")]
         public string UserName { get; set; }
 
-        [Required(ErrorMessage = "Email is required")]
-        [EmailAddress(ErrorMessage="Email is not in the correct format")]
-        public string Email { get; set; }
-        
-        [Required(ErrorMessage="Phone number is required")]
+
+        [Display(Name = "Tel No:")]
         public string PhoneNumber { get; set; }
 
-        [Required(ErrorMessage = "Password is required")]
+
+        [Required(ErrorMessage = "Email adresi gereklidir.")]
+        [Display(Name = "Email Adresiniz")]
+        [EmailAddress(ErrorMessage = "Email adresiniz doğru formatta değil")]
+        public string Email { get; set; }
+
+
+        [Required(ErrorMessage = "Şifreniz gereklidir.")]
+        [Display(Name = "Şifre")]
         [DataType(DataType.Password)]
         public string Password { get; set; }
+
+        [Display(Name = "Doğum tarihi")]
+        [DataType(DataType.Date)]
+        public DateTime? BirthDay { get; set; }
+
+        public string? Picture { get; set; }
+
+
+        [Display(Name = "Şehir")]
+        public string City { get; set; }
+
+
+        [Display(Name = "Cinsiyet")]
+        public Gender Gender { get; set; }
     }
 }
