@@ -5,20 +5,17 @@ using NetCoreIdentity.Models;
 
 namespace NetCoreIdentity.Controllers
 {
-    public class AdminController : Controller
+    public class AdminController : BaseController
     {
 
-        private readonly UserManager<AppUser> userManager;
-
-        public AdminController(UserManager<AppUser> userManager)
+        public AdminController(UserManager<AppUser> userManager) : base(userManager,null,null)
         {
-            this.userManager = userManager;
         }
 
 
         public IActionResult Index()
         {
-            return View(userManager.Users.ToList());
+            return View(_userManager.Users.ToList());
         }
     }
 }

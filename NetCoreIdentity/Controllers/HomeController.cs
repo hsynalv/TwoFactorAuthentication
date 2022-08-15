@@ -6,17 +6,12 @@ using NetCoreIdentity.Models.ViewModel;
 
 namespace NetCoreIdentity.Controllers
 {
-    public class HomeController : Controller
+    public class HomeController : BaseController
     {
-
-        private readonly UserManager<AppUser> _userManager;
-        private readonly SignInManager<AppUser> _signInManager;
         private LoginViewModel _loginViewModel;
 
-        public HomeController(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager)
+        public HomeController(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager) : base(userManager, signInManager)
         {
-            _userManager = userManager;
-            _signInManager = signInManager;
         }
 
         public IActionResult Index()
