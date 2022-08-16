@@ -7,7 +7,15 @@
 <h3 class="text-center">Kullanıcı Bilgileri</h3>
 <div class="row">
     <div class="col-sm-3">
-        <img style="width:100%; height:100%" src="@Model.Picture" />
+        @if (Model.Picture != null)
+        {
+            <img style="width: 100%; height: 100%" src="@Model.Picture"/>
+        }
+        else
+        {
+            <img style="width: 100%; height: 100%" src="~/UserPicture/user.webp"/>
+        }
+        
     </div>
     <div class="col-sm-9">
 
@@ -26,11 +34,32 @@
             </tr>
             <tr>
                 <th>City</th>
-                <td>@Model.City</td>
+                <td>
+                    @if (!String.IsNullOrEmpty(Model.City))
+                    {
+                        @Model.City
+                    }
+                    else
+
+                    {
+                        <span>belirtilmemiş</span>
+                    }
+                </td>
             </tr>
             <tr>
                 <th>Doğum tarihi</th>
-                <td>@Model.BirthDay?.ToShortDateString()</td>
+                <td>
+
+                    @if (Model.BirthDay != null)
+                    {
+                        @Model.BirthDay?.ToShortDateString()
+                    }
+                    else
+
+                    {
+                        <span>belirtilmemiş</span>
+                    }
+                </td>
             </tr>
 
             <tr>

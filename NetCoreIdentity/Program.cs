@@ -49,7 +49,6 @@ builder.Services.ConfigureApplicationCookie(opt =>
     opt.LoginPath = new PathString("/Home/Login");
     opt.ExpireTimeSpan = TimeSpan.FromDays(30);
     opt.LogoutPath = new PathString("/Member/LogOut");
-    //opt.AccessDeniedPath = new PathString("/Account/AccessDenied");
     opt.SlidingExpiration = true;
     opt.AccessDeniedPath = new PathString("/Member/AccessDenied");
 });
@@ -57,6 +56,7 @@ builder.Services.ConfigureApplicationCookie(opt =>
 #endregion 
 
 builder.Services.AddMvc();
+
 
 var app = builder.Build();
 
@@ -71,7 +71,7 @@ app.MapControllerRoute(
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
 app.UseAuthentication();
-
+app.UseAuthorization();
 
 
 app.Run();

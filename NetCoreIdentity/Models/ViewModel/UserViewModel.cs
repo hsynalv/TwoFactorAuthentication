@@ -33,7 +33,7 @@ namespace NetCoreIdentity.Models.ViewModel
 
 
         [Display(Name = "Şehir")]
-        public string City { get; set; }
+        public string? City { get; set; }
 
 
         [Display(Name = "Cinsiyet")]

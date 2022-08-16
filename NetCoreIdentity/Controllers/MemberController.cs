@@ -9,6 +9,7 @@ using NetCoreIdentity.Models.ViewModel;
 
 namespace NetCoreIdentity.Controllers
 {
+    [Authorize]
     public class MemberController : BaseController
     {
 
@@ -138,6 +139,19 @@ namespace NetCoreIdentity.Controllers
         }
 
         public IActionResult AccessDenied()
+        {
+            return View();
+        }
+
+        [Authorize(Roles = "Editör")]
+        public IActionResult Edıtor()
+        {
+            return View();
+        }
+
+        
+        [Authorize(Roles = "Super Admin")]
+        public IActionResult SuperAdmin()
         {
             return View();
         }
