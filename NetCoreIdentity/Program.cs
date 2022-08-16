@@ -15,24 +15,6 @@ builder.Services.ConfigureCookieAuthenticationOptions();
 builder.Services.ConfigureAddScoped();
 
 
-
-
-
-
-#region IdentityServer4  1. sýrada olmalý
-
-#endregion
-
-#region CookieAuthenticationOptions 2. sýrada olmalý.
-
-// CookieBuilder
-
-
-
-#endregion
-
-
-
 builder.Services.AddMvc();
 
 
