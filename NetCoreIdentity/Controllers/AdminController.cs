@@ -22,6 +22,11 @@ namespace NetCoreIdentity.Controllers
             return View();
         }
 
+        public IActionResult Claims()
+        {
+            return View(User.Claims.ToList());
+        }
+
         public IActionResult Users()
         {
             return View(_userManager.Users.ToList());
