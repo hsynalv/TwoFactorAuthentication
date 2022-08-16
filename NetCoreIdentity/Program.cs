@@ -1,5 +1,7 @@
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using NetCoreIdentity.ClaimProvider;
 using NetCoreIdentity.CustomValidation;
 using NetCoreIdentity.Models;
 
@@ -8,6 +10,14 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<AppIdentityDbContext>(opt =>
 {
     opt.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
+});
+
+builder.Services.AddAuthorization(opt =>
+{
+    opt.AddPolicy("SamsunPolicy", policy =>
+    {
+        policy.RequireClaim("City", "Samsun");
+    });
 });
 
 
@@ -53,7 +63,10 @@ builder.Services.ConfigureApplicationCookie(opt =>
     opt.AccessDeniedPath = new PathString("/Member/AccessDenied");
 });
 
-#endregion 
+#endregion
+
+builder.Services.AddScoped<IClaimsTransformation, ClaimProvider>();
+
 
 builder.Services.AddMvc();
 

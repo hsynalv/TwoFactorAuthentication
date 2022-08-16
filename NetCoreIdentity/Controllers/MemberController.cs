@@ -25,6 +25,12 @@ namespace NetCoreIdentity.Controllers
             return View(userViewModel);
         }
 
+        [Authorize(Policy = "SamsunPolicy")]
+        public IActionResult SamsunPage()
+        {
+            return View();
+        }
+
         public IActionResult PasswordChange()
         {
             return View();
