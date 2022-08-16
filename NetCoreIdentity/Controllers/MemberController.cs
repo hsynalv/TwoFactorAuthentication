@@ -25,11 +25,9 @@ namespace NetCoreIdentity.Controllers
             return View(userViewModel);
         }
 
-        [Authorize(Policy = "SamsunPolicy")]
-        public IActionResult SamsunPage()
-        {
-            return View();
-        }
+
+
+        #region PasswordChange
 
         public IActionResult PasswordChange()
         {
@@ -74,6 +72,10 @@ namespace NetCoreIdentity.Controllers
 
             return View(passwordChangeViewModel);
         }
+
+        #endregion
+
+        #region UserEdit
 
         public IActionResult UserEdit()
         {
@@ -139,6 +141,8 @@ namespace NetCoreIdentity.Controllers
             return View(userViewModel);
         }
 
+        #endregion
+
         public void LogOut()
         {
             _signInManager.SignOutAsync();
@@ -158,6 +162,12 @@ namespace NetCoreIdentity.Controllers
         
         [Authorize(Roles = "Super Admin")]
         public IActionResult SuperAdmin()
+        {
+            return View();
+        }
+
+        [Authorize(Policy = "SamsunPolicy")]
+        public IActionResult SamsunPage()
         {
             return View();
         }

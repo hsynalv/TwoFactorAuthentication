@@ -32,6 +32,24 @@ namespace NetCoreIdentity.Controllers
             return View(_userManager.Users.ToList());
         }
 
+        public IActionResult Roles()
+        {
+            return View(_roleManager.Roles.ToList());
+        }
+
+        public IActionResult RoleDelete(string id)
+        {
+            IdentityRole role = _roleManager.FindByIdAsync(id).Result;
+            if (role != null)
+            {
+                IdentityResult result = _roleManager.DeleteAsync(role).Result;
+            }
+
+            return RedirectToAction("Roles");
+        }
+
+        #region RoleCreate
+
         public IActionResult RoleCreate()
         {
             return View();
@@ -57,21 +75,9 @@ namespace NetCoreIdentity.Controllers
             return View(roleViewModel);
         }
 
-        public IActionResult Roles()
-        {
-            return View(_roleManager.Roles.ToList());
-        }
-
-        public IActionResult RoleDelete(string id)
-        {
-            IdentityRole role = _roleManager.FindByIdAsync(id).Result;
-            if (role != null)
-            {
-                IdentityResult result = _roleManager.DeleteAsync(role).Result;
-            }
-
-            return RedirectToAction("Roles");
-        }
+        #endregion
+        
+        #region RoleUpdate
 
         public IActionResult RoleUpdate(string id)
         {
@@ -111,6 +117,10 @@ namespace NetCoreIdentity.Controllers
 
             return View(roleViewModel);
         }
+
+        #endregion
+
+        #region RoleAssign
 
         public IActionResult RoleAssign(string id)
         {
@@ -164,6 +174,8 @@ namespace NetCoreIdentity.Controllers
 
             return RedirectToAction("Users");
         }
+
+        #endregion
 
     }
 }

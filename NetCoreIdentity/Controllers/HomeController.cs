@@ -24,6 +24,7 @@ namespace NetCoreIdentity.Controllers
             return View();
         }
 
+
         #region LogIn
 
         public IActionResult LogIn(string retunUrl)
@@ -130,6 +131,8 @@ namespace NetCoreIdentity.Controllers
 
         #endregion
 
+        #region ResetPassword
+
         public IActionResult ResetPassword()
         {
             return View();
@@ -160,6 +163,10 @@ namespace NetCoreIdentity.Controllers
 
             return View(viewModel);
         }
+
+        #endregion
+
+        #region ResetPasswordConfirm
 
         public IActionResult ResetPasswordConfirm(string userId, string token)
         {
@@ -204,6 +211,8 @@ namespace NetCoreIdentity.Controllers
 
             return View(passwordResetViewModel);
         }
+
+        #endregion
 
         
     }
