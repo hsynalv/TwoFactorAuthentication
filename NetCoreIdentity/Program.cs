@@ -7,7 +7,7 @@ using NetCoreIdentity.Extensions;
 using NetCoreIdentity.Models;
 
 var builder = WebApplication.CreateBuilder(args);
-
+builder.Services.ConfigureAddTransit();
 builder.Services.ConfigureSqlContext(builder.Configuration);
 builder.Services.ConfigureAddAuthorization();
 builder.Services.ConfigureAddIdentityServer4();

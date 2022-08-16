@@ -33,8 +33,7 @@
                 <li class="nav-item">
                     <a class="btn btn-info" asp-action="SuperAdmin" asp-controller="Member">SuperAdmin ana sayfa</a>
                 </li>
-                <li class="nav-item">
-                    <a class="btn btn-danger" asp-action="SamsunPage" asp-controller="Member">Samsun sayfası</a>
+
                 </li>
             </ul>
         </div>
@@ -48,12 +47,15 @@
         </div>
         <div class="col-md-4">
             <h3>Menü</h3>
+            <div style="display: grid">
+                <a class="btn btn-danger btn-block mt-2" asp-action="SamsunPage" asp-controller="Member">Samsun sayfası</a>
+                <a class="btn btn-danger btn-block mt-2" asp-action="ViolancePage" asp-controller="Member">Violange</a>
+                <a class="btn btn-danger btn-block mt-2" asp-action="ExchangeRedirect" asp-controller="Member">Borsa Bilgileri</a>
+                <a class="btn btn-info btn-block mt-2" asp-action="PasswordChange" asp-controller="Member">Şifre değiştirme</a>
+                <a class="btn btn-info btn-block mt-2" asp-action="UserEdit" asp-controller="Member">Bilgi güncelleme</a>
+                <a class="btn btn-info btn-block mt-2" asp-action="Logout" asp-controller="Member" asp-route-returnUrl="/Home/Index">Çıkış yap</a>
+            </div>
 
-            <a class="btn btn-info btn-block" asp-action="PasswordChange" asp-controller="Member">Şifre değiştirme</a>
-
-            <a class="btn btn-info btn-block" asp-action="UserEdit" asp-controller="Member">Bilgi güncelleme</a>
-
-            <a class="btn btn-info btn-block" asp-action="Logout" asp-controller="Member" asp-route-returnUrl="/Home/Index">Çıkış yap</a>
         </div>
     </div>
 </div>

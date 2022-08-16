@@ -1,4 +1,5 @@
-﻿using Mapster;
+﻿using System.Security.Claims;
+using Mapster;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -168,6 +169,33 @@ namespace NetCoreIdentity.Controllers
 
         [Authorize(Policy = "SamsunPolicy")]
         public IActionResult SamsunPage()
+        {
+            return View();
+        }
+
+        [Authorize(Roles="Super Admin",Policy = "ViolencePolicy")]
+        public IActionResult ViolancePage()
+        {
+            return View();
+        }
+
+
+        public async Task<IActionResult> ExchangeRedirect()
+        {
+            var result = User.HasClaim(x => x.Type == "ExpireDateExchange");
+            if (!result)
+            {
+                await _userManager.AddClaimAsync(CurrentUser,
+                    new Claim("ExpireDateExchange", DateTime.Now.AddDays(30).ToString(), ClaimValueTypes.String,"Internal"));
+                await _signInManager.SignOutAsync();
+                await _signInManager.SignInAsync(CurrentUser, true);
+            }
+            
+            return RedirectToAction("Exchange", "Member");
+        }
+        
+        [Authorize(Policy = "ExchangePolicy")]
+        public IActionResult Exchange()
         {
             return View();
         }

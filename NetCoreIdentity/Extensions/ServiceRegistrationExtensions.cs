@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using NetCoreIdentity.AuthorizationHelpers;
 using NetCoreIdentity.CustomValidation;
 using NetCoreIdentity.Models;
 
@@ -23,6 +25,16 @@ namespace NetCoreIdentity.Extensions
                 opt.AddPolicy("SamsunPolicy", policy =>
                 {
                     policy.RequireClaim("City", "Samsun");
+                });
+
+                opt.AddPolicy("ViolencePolicy", policy =>
+                {
+                    policy.RequireClaim("Violence");
+                });
+
+                opt.AddPolicy("ExchangePolicy", policy =>
+                {
+                    policy.AddRequirements(new ExpireDateExchangeRequirement());
                 });
             });
         }
@@ -73,6 +85,11 @@ namespace NetCoreIdentity.Extensions
         public static void ConfigureAddScoped(this IServiceCollection services)
         {
             services.AddScoped<IClaimsTransformation, ClaimProvider.ClaimProvider>();
+        }
+
+        public static void ConfigureAddTransit(this IServiceCollection services)
+        {
+            services.AddTransient<IAuthorizationHandler, ExpireDateExchangeHandler>();
         }
     }
 }

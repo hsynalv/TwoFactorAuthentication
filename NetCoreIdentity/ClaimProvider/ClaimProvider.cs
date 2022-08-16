@@ -33,6 +33,19 @@ namespace NetCoreIdentity.ClaimProvider
                                 );
                         }
                     }
+
+                    if (user.BirthDay != null)
+                    {
+                        var today = DateTime.Today;
+                        var age = today.Year - user.BirthDay?.Year;
+                        if (age > 15)
+                        {
+                            identity.AddClaim(
+                                new Claim("Violence", true.ToString(),ClaimValueTypes.String,"Internal")
+                            );
+                        }
+
+                    }
                 }
             }
 
