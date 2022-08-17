@@ -25,7 +25,7 @@ namespace NetCoreIdentity.Controllers
         }
 
 
-        #region LogIn
+         #region LogIn
 
         public IActionResult LogIn(string retunUrl)
         {
@@ -48,6 +48,12 @@ namespace NetCoreIdentity.Controllers
 
                         return View(loginViewModel);
                     }
+
+                    //if (_userManager.IsEmailConfirmedAsync(user).Result == false)
+                    //{
+                    //    ModelState.AddModelError("","Email adresiniz doğrulanmamıştır, lütfen emailinizi kontrol ediiz.");
+                    //    return View(loginViewModel);
+                    //}
 
                     await _signInManager.SignOutAsync();
                     var result = await _signInManager.PasswordSignInAsync(user, loginViewModel.Password,
@@ -114,6 +120,15 @@ namespace NetCoreIdentity.Controllers
                 var result = await _userManager.CreateAsync(_user, user.Password);
                 if (result.Succeeded)
                 {
+
+                    //string confirmationToken = await _userManager.GenerateEmailConfirmationTokenAsync(_user);
+                    //string link = Url.Action("ConfirmEmail", "Home",
+                    //    new { userId = _user.Id, token = confirmationToken }, Request.Scheme);
+
+                    //Helper.EmailConfirmation.SendEmail(link, _user.Email);
+
+
+
                     return RedirectToAction("LogIn");
                 }
                 else
@@ -213,6 +228,23 @@ namespace NetCoreIdentity.Controllers
         }
 
         #endregion
+
+        public async Task<IActionResult> ConfirmEmail(string userId, string token)
+        {
+            var user = await _userManager.FindByIdAsync(userId);
+
+            IdentityResult result = await _userManager.ConfirmEmailAsync(user, token);
+
+            if (result.Succeeded)
+            {
+                ViewBag.status = "Email adresiniz onaylanmıştır. Login ekranından giriş yapabilirsiniz.";
+            }
+            else
+            {
+                ViewBag.status = "Bir hata meydana geldi. lütfen daha sonra tekrar deneyiniz.";
+            }
+            return View();
+        }
 
         
     }
