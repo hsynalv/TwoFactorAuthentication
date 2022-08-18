@@ -10,9 +10,12 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.ConfigureAddTransit();
 builder.Services.ConfigureSqlContext(builder.Configuration);
 builder.Services.ConfigureAddAuthorization();
+builder.Services.ConfigureFacebookLogin(builder.Configuration);
 builder.Services.ConfigureAddIdentityServer4();
 builder.Services.ConfigureCookieAuthenticationOptions();
 builder.Services.ConfigureAddScoped();
+
+
 
 
 builder.Services.AddMvc();
