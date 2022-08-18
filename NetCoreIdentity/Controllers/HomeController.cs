@@ -302,7 +302,9 @@ namespace NetCoreIdentity.Controllers
 
                         if (loginResult.Succeeded)
                         {
-                            await _signInManager.SignInAsync(user, true);
+                            //     await signInManager.SignInAsync(user, true);
+
+                            await _signInManager.ExternalLoginSignInAsync(info.LoginProvider, info.ProviderKey, true);
                             return Redirect(ReturnUrl);
                         }
                         else
@@ -317,11 +319,18 @@ namespace NetCoreIdentity.Controllers
                 }
             }
 
-            return RedirectToAction("Error");
+            List<string> errors = ModelState.Values.SelectMany(x => x.Errors).Select(y => y.ErrorMessage).ToList();
+
+            return View("Error", errors);
         }
 
         #endregion
 
-        
+        public IActionResult Error()
+        {
+            return View();
+        }
+
+
     }
 }
