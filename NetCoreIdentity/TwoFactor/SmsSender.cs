@@ -20,6 +20,7 @@ public class SmsSender
 
         //SMS PROVIDER CODES
 
-        return code;
+        //return code;
+        return "1896";
     }
 }
