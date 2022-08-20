@@ -79,7 +79,7 @@ namespace NetCoreIdentity.Controllers
                             {
                                 HttpContext.Session.Remove("currentTime");
                             }
-                            return RedirectToAction("TwoFactorLogin");
+                            return RedirectToAction("TwoFactorLogIn", "Home", new { ReturnUrl = TempData["ReturnUrl"].ToString() });
                         }
                         else
                         {
@@ -406,7 +406,7 @@ namespace NetCoreIdentity.Controllers
 
                     ViewBag.timeLeft = _twoFactorService.TimeLeft(HttpContext);
 
-                    HttpContext.Session.SetString("codeverification", _emailSender.Send(user.Email));
+                    HttpContext.Session.SetString("codeVerification", _emailSender.Send(user.Email));
 
                     break;
             }
@@ -443,6 +443,24 @@ namespace NetCoreIdentity.Controllers
                     ModelState.AddModelError("", "Doğrulama kodu yanlış");
                 }
             }
+            else if (user.TwoFactor == (sbyte)TwoFactor.Email || user.TwoFactor == (int)TwoFactor.Phone)
+            {
+                ViewBag.timeLeft = _twoFactorService.TimeLeft(HttpContext);
+                if (twoFactorLoginView.VerificationCode == HttpContext.Session.GetString("codeVerification"))
+
+                {
+                    await _signInManager.SignOutAsync();
+
+                    await _signInManager.SignInAsync(user, twoFactorLoginView.isRememberMe);
+                    HttpContext.Session.Remove("currentTime");
+                    HttpContext.Session.Remove("codeVerification");
+                    isSuccessAuth = true;
+                }
+                else
+                {
+                    ModelState.AddModelError("", "Doğrulama kodu yanlış");
+                }
+            }
 
             if (isSuccessAuth)
             {
@@ -455,6 +473,7 @@ namespace NetCoreIdentity.Controllers
 
         #endregion
 
+        
 
 
 
