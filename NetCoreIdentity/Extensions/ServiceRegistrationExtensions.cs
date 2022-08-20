@@ -92,13 +92,19 @@ namespace NetCoreIdentity.Extensions
             services.AddTransient<IAuthorizationHandler, ExpireDateExchangeHandler>();
         }
 
-        public static void ConfigureFacebookLogin(this IServiceCollection services, IConfiguration configuration)
+        public static void ConfigureExternalLogin(this IServiceCollection services, IConfiguration configuration)
         {
-            services.AddAuthentication().AddFacebook(opt =>
-            {
-                opt.AppId = configuration["Authentication:Facebook:AppId"];
-                opt.AppSecret = configuration["Authentication:Facebook:AppSecret"];
-            });
+            services.AddAuthentication()
+                .AddFacebook(opt =>
+                {
+                    opt.AppId = configuration["Authentication:Facebook:AppId"]; 
+                    opt.AppSecret = configuration["Authentication:Facebook:AppSecret"];
+                })
+                .AddGoogle(opt =>
+                {
+                    opt.ClientId = configuration["Authentication:Google:ClientId"];
+                    opt.ClientSecret = configuration["Authentication:Google:ClientSecret"];
+                });
         }
     }
 }

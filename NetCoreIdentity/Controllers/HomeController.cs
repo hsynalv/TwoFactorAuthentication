@@ -248,7 +248,7 @@ namespace NetCoreIdentity.Controllers
             return View();
         }
 
-        #region FaceookLogin
+        #region ExternalLogin
 
         public IActionResult FacebookLogin(string ReturnUrl)
         {
@@ -258,6 +258,17 @@ namespace NetCoreIdentity.Controllers
 
             return new ChallengeResult("Facebook", properties);
         }
+
+        public IActionResult GoogleLogin(string ReturnUrl)
+        {
+            string RedirectUrl = Url.Action("ExternalResponse", "Home", new { ReturnUrl = ReturnUrl });
+
+            var properties = _signInManager.ConfigureExternalAuthenticationProperties("Google", RedirectUrl);
+
+            return new ChallengeResult("Google", properties);
+        }
+        
+        #endregion
 
         public async Task<IActionResult> ExternalResponse(string ReturnUrl = "/")
         {
@@ -324,7 +335,6 @@ namespace NetCoreIdentity.Controllers
             return View("Error", errors);
         }
 
-        #endregion
 
         public IActionResult Error()
         {
