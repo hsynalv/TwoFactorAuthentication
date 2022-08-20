@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using NetCoreIdentity.Enums;
 using NetCoreIdentity.Models;
 using NetCoreIdentity.Models.ViewModel;
+using NetCoreIdentity.TwoFactorServices;
 
 namespace NetCoreIdentity.Controllers
 {
@@ -14,8 +15,11 @@ namespace NetCoreIdentity.Controllers
     public class MemberController : BaseController
     {
 
-        public MemberController(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager) : base(userManager, signInManager)
+        private readonly TwoFactorService _twoFactorService;
+
+        public MemberController(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager, TwoFactorService twoFactorService) : base(userManager, signInManager)
         {
+            _twoFactorService = twoFactorService;
         }
 
         public async Task<IActionResult> Index()
@@ -203,11 +207,11 @@ namespace NetCoreIdentity.Controllers
 
         #endregion
 
-        #region TwoFactorAuthentication
+        #region TwoFactorAuth
 
         public IActionResult TwoFactorAuth()
         {
-            return View(new AuthenticatorViewModel() { TwoFactorType = (TwoFactor)CurrentUser.TwoFactor });
+            return View(new AuthenticatorViewModel() { TwoFactorType = (TwoFactor)CurrentUser.TwoFactor,  });
         }
 
         [HttpPost]
@@ -223,6 +227,12 @@ namespace NetCoreIdentity.Controllers
                     TempData["message"] = "İki adımlı kimlik doğrulama tipiniz hiçbiri olarak belirlenmiştir.";
 
                     break;
+                case TwoFactor.MicrosoftGoogle:
+
+                    return RedirectToAction("TwoFactorWithAuthenticator");
+
+                default:
+                    break;
             }
 
             await _userManager.UpdateAsync(CurrentUser);
@@ -231,5 +241,36 @@ namespace NetCoreIdentity.Controllers
         }
 
         #endregion
+
+        #region TwoFactorWithAuthenticator
+
+        public async Task<IActionResult> TwoFactorWithAuthenticator()
+        {
+            string unformattedKey = await _userManager.GetAuthenticatorKeyAsync(CurrentUser);
+
+            if (string.IsNullOrEmpty(unformattedKey))
+            {
+                await _userManager.ResetAuthenticatorKeyAsync(CurrentUser);
+
+                unformattedKey = await _userManager.GetAuthenticatorKeyAsync(CurrentUser);
+            }
+
+            AuthenticatorViewModel authenticatorViewModel = new AuthenticatorViewModel();
+
+            authenticatorViewModel.SharedKey = unformattedKey;
+
+            authenticatorViewModel.AuthenticatorUri = _twoFactorService.GenerateQrCodeUri(CurrentUser.Email, unformattedKey);
+
+            return View(authenticatorViewModel);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> TwoFactorWithAuthenticator(AuthenticatorViewModel authenticatorVM)
+        {
+            return View();
+        }
+
+        #endregion
+
     }
 }
