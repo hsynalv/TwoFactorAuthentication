@@ -7,6 +7,7 @@ using NetCoreIdentity.Extensions;
 using NetCoreIdentity.Models;
 
 var builder = WebApplication.CreateBuilder(args);
+    
 builder.Services.ConfigureAddTransit();
 builder.Services.ConfigureSqlContext(builder.Configuration);
 builder.Services.ConfigureAddAuthorization();
@@ -16,16 +17,18 @@ builder.Services.ConfigureCookieAuthenticationOptions();
 builder.Services.ConfigureAddScoped();
 
 
-
-
 builder.Services.AddMvc();
 
 
 var app = builder.Build();
 
-app.UseDeveloperExceptionPage();
-app.UseStatusCodePages();
 
+if (app.Environment.IsDevelopment())
+{
+    app.UseDeveloperExceptionPage();
+}
+
+app.UseStatusCodePages();
 app.UseStaticFiles();
 
 

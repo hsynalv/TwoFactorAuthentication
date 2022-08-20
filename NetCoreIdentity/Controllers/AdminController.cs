@@ -8,7 +8,7 @@ using NetCoreIdentity.Models.ViewModel;
 
 namespace NetCoreIdentity.Controllers
 {
-    [Authorize(Roles = "Admin")]
+    //[Authorize(Roles = "Admin")]
     public class AdminController : BaseController
     {
 

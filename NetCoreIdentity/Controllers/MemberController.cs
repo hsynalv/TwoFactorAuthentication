@@ -178,8 +178,7 @@ namespace NetCoreIdentity.Controllers
         {
             return View();
         }
-
-
+        
         public async Task<IActionResult> ExchangeRedirect()
         {
             var result = User.HasClaim(x => x.Type == "ExpireDateExchange");
@@ -196,6 +195,11 @@ namespace NetCoreIdentity.Controllers
         
         [Authorize(Policy = "ExchangePolicy")]
         public IActionResult Exchange()
+        {
+            return View();
+        }
+
+        public IActionResult TwoFactorAuth()
         {
             return View();
         }

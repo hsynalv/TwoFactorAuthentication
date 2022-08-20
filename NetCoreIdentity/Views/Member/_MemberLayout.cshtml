@@ -14,7 +14,7 @@
 
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
     <div class="container">
-        <a class="navbar-brand" href="#">Bıdıbıdı.com</a>
+        <a class="navbar-brand" asp-controller="Home" asp-action="Index" >Skorsky.com</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
@@ -22,16 +22,16 @@
 
             <ul class="navbar-nav">
                 <li class="nav-item">
-                    <a class="nav-link" asp-action="Index" asp-controller="Member">Üye Ana Sayfa</a>
+                    <a class="nav-link mr-1" asp-action="Index" asp-controller="Member">Üye Ana Sayfa</a>
                 </li>
                 <li class="nav-item">
-                    <a class="btn btn-info" asp-action="Index" asp-controller="Admin">Admin ana sayfa</a>
+                    <a class="btn btn-info mr-1" asp-action="Index" asp-controller="Admin">Admin ana sayfa</a>
                 </li>
                 <li class="nav-item">
-                    <a class="btn btn-info" asp-action="Edıtor" asp-controller="Member">Editor ana sayfa</a>
+                    <a class="btn btn-info mr-1" asp-action="Edıtor" asp-controller="Member">Editor ana sayfa</a>
                 </li>
                 <li class="nav-item">
-                    <a class="btn btn-info" asp-action="SuperAdmin" asp-controller="Member">SuperAdmin ana sayfa</a>
+                    <a class="btn btn-info mr-1" asp-action="SuperAdmin" asp-controller="Member">SuperAdmin ana sayfa</a>
                 </li>
             </ul>
         </div>
@@ -51,6 +51,7 @@
                 <a class="btn btn-danger btn-block mt-2" asp-action="ExchangeRedirect" asp-controller="Member">Borsa Bilgileri</a>
                 <a class="btn btn-info btn-block mt-2" asp-action="PasswordChange" asp-controller="Member">Şifre değiştirme</a>
                 <a class="btn btn-info btn-block mt-2" asp-action="UserEdit" asp-controller="Member">Bilgi güncelleme</a>
+                <a class="btn btn-success btn-block mt-2" asp-action="TwoFactorAuth" asp-controller="Member">İki adımlı kimlik doğrulama</a>
                 <a class="btn btn-info btn-block mt-2" asp-action="Logout" asp-controller="Member" asp-route-returnUrl="/Home/Index">Çıkış yap</a>
             </div>
 
