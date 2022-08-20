@@ -227,6 +227,15 @@ namespace NetCoreIdentity.Controllers
                     TempData["message"] = "İki adımlı kimlik doğrulama tipiniz hiçbiri olarak belirlenmiştir.";
 
                     break;
+                
+                case TwoFactor.Email:
+
+                    CurrentUser.TwoFactorEnabled = true;
+                    CurrentUser.TwoFactor = (sbyte)TwoFactor.Email;
+                    TempData["message"] = "İki adımlı kimlik doğrulama tipimiz email olarak belirlenmiştir";
+
+                    break;
+                
                 case TwoFactor.MicrosoftGoogle:
 
                     return RedirectToAction("TwoFactorWithAuthenticator");
