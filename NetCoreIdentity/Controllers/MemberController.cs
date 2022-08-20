@@ -154,6 +154,8 @@ namespace NetCoreIdentity.Controllers
             return View();
         }
 
+        #region Role and Claims Page
+
         [Authorize(Roles = "Editör")]
         public IActionResult Edıtor()
         {
@@ -199,9 +201,35 @@ namespace NetCoreIdentity.Controllers
             return View();
         }
 
+        #endregion
+
+        #region TwoFactorAuthentication
+
         public IActionResult TwoFactorAuth()
         {
             return View(new AuthenticatorViewModel() { TwoFactorType = (TwoFactor)CurrentUser.TwoFactor });
         }
+
+        [HttpPost]
+        public async Task<IActionResult> TwoFactorAuth(AuthenticatorViewModel authenticatorVM)
+        {
+            switch (authenticatorVM.TwoFactorType)
+            {
+                case TwoFactor.None:
+
+                    CurrentUser.TwoFactorEnabled = false;
+                    CurrentUser.TwoFactor = (sbyte)TwoFactor.None;
+
+                    TempData["message"] = "İki adımlı kimlik doğrulama tipiniz hiçbiri olarak belirlenmiştir.";
+
+                    break;
+            }
+
+            await _userManager.UpdateAsync(CurrentUser);
+
+            return View(authenticatorVM);
+        }
+
+        #endregion
     }
 }
