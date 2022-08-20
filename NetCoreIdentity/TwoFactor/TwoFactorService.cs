@@ -18,5 +18,11 @@ namespace NetCoreIdentity.TwoFactorServices
 
             return string.Format(format, _urlEncoder.Encode("www.skorsky.com"), _urlEncoder.Encode(email), unformattedKey);
         }
+
+        public int GetCodeVerification()
+        {
+            Random rnd = new Random();
+            return rnd.Next(1000, 9999);
+        }
     }
 }
