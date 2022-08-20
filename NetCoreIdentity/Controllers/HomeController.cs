@@ -1,6 +1,7 @@
 ﻿using System.Security.Claims;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using NetCoreIdentity.Enums;
 using NetCoreIdentity.Helper;
 using NetCoreIdentity.Models;
 using NetCoreIdentity.Models.ViewModel;
@@ -116,7 +117,9 @@ namespace NetCoreIdentity.Controllers
                 {
                     UserName = user.UserName,
                     Email = user.Email,
-                    PhoneNumber = user.PhoneNumber
+                    PhoneNumber = user.PhoneNumber,
+                    TwoFactor = (sbyte?)TwoFactor.None,
+
                 };
 
                 var result = await _userManager.CreateAsync(_user, user.Password);
