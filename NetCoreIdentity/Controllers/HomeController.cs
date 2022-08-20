@@ -30,7 +30,7 @@ namespace NetCoreIdentity.Controllers
 
         #region LogIn
 
-        public IActionResult LogIn(string retunUrl)
+        public IActionResult LogIn(string retunUrl="/")
         {
             TempData["retunUrl"] = retunUrl;
             return View();
@@ -58,19 +58,22 @@ namespace NetCoreIdentity.Controllers
                     //    return View(loginViewModel);
                     //}
 
-                    await _signInManager.SignOutAsync();
-                    var result = await _signInManager.PasswordSignInAsync(user, loginViewModel.Password,
-                        loginViewModel.RememberMe, false);
-                    if (result.Succeeded)
+
+                    bool userCheck = await _userManager.CheckPasswordAsync(user, loginViewModel.Password);
+                    if (userCheck)
                     {
                         await _userManager.ResetAccessFailedCountAsync(user);
+                        await _signInManager.SignOutAsync();
+                        var result = await _signInManager.PasswordSignInAsync(user, loginViewModel.Password, loginViewModel.RememberMe, false);
 
-                        if (TempData["retunUrl"] != null)
+                        if (result.RequiresTwoFactor)
+                        {
+                            return RedirectToAction("TwoFactorLogin");
+                        }
+                        else
                         {
                             return Redirect(TempData["retunUrl"].ToString());
                         }
-
-                        return RedirectToAction("Index", "Member");
                     }
                     else
                     {
@@ -272,7 +275,6 @@ namespace NetCoreIdentity.Controllers
         }
 
         public IActionResult MicrosoftLogin(string ReturnUrl)
-
         {
             string RedirectUrl = Url.Action("ExternalResponse", "Home", new { ReturnUrl = ReturnUrl });
 
@@ -292,11 +294,15 @@ namespace NetCoreIdentity.Controllers
             }
             else
             {
-                Microsoft.AspNetCore.Identity.SignInResult result = await _signInManager.ExternalLoginSignInAsync(info.LoginProvider, info.ProviderKey, true);
+                SignInResult result = await _signInManager.ExternalLoginSignInAsync(info.LoginProvider, info.ProviderKey, true);
 
                 if (result.Succeeded)
                 {
                     return Redirect(ReturnUrl);
+                }
+                else if (result.RequiresTwoFactor)
+                {
+                    return RedirectToAction("TwoFactorLogin");
                 }
                 else
                 {
@@ -367,6 +373,66 @@ namespace NetCoreIdentity.Controllers
         {
             return View();
         }
+
+        #region TwoFactorLogin
+
+        public async Task<IActionResult> TwoFactorLogin(string ReturnUrl = "/")
+        {
+            var user = await _signInManager.GetTwoFactorAuthenticationUserAsync();
+
+            TempData["ReturnUrl"] = ReturnUrl;
+
+            switch ((TwoFactor)user.TwoFactor)
+            {
+                case TwoFactor.MicrosoftGoogle:
+                    break;
+            }
+
+            return View(new TwoFactorLoginViewModel() { TwoFactorType = (TwoFactor)user.TwoFactor, isRecoverCode = false, isRememberMe = false, VerificationCode = string.Empty });
+        }
+        
+        [HttpPost]
+        public async Task<IActionResult> TwoFactorLogin(TwoFactorLoginViewModel twoFactorLoginView)
+        {
+            var user = await _signInManager.GetTwoFactorAuthenticationUserAsync();
+
+            ModelState.Clear();
+            bool isSuccessAuth = false;
+
+            if ((TwoFactor)user.TwoFactor == TwoFactor.MicrosoftGoogle)
+            {
+                SignInResult result;
+
+                if (twoFactorLoginView.isRecoverCode)
+                {
+                    result = await _signInManager.TwoFactorRecoveryCodeSignInAsync(twoFactorLoginView.VerificationCode);
+                }
+                else
+                {
+                    result = await _signInManager.TwoFactorAuthenticatorSignInAsync(twoFactorLoginView.VerificationCode, twoFactorLoginView.isRememberMe, false);
+                }
+                if (result.Succeeded)
+                {
+                    isSuccessAuth = true;
+                }
+                else
+                {
+                    ModelState.AddModelError("", "Doğrulama kodu yanlış");
+                }
+            }
+
+            if (isSuccessAuth)
+            {
+                return Redirect(TempData["ReturnUrl"].ToString());
+            }
+            twoFactorLoginView.TwoFactorType = (TwoFactor)user.TwoFactor;
+
+            return View(twoFactorLoginView);
+        }
+
+        #endregion
+
+
 
 
     }
