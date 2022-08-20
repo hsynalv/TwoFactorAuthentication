@@ -119,5 +119,14 @@ namespace NetCoreIdentity.Extensions
         {
             services.Configure<TwoFactorOptions>(configuration.GetSection("TwoFactorOptions"));
         }
+
+        public static void ConfigureSession(this IServiceCollection services)
+        {
+            services.AddSession(options =>
+            {
+                options.IdleTimeout = TimeSpan.FromMinutes(30);
+                options.Cookie.Name = "MainSession";
+            });
+        }
     }
 }

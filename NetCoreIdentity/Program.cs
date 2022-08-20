@@ -16,6 +16,7 @@ builder.Services.ConfigureAddIdentityServer4();
 builder.Services.ConfigureCookieAuthenticationOptions();
 builder.Services.ConfigureAddScoped();
 builder.Services.ConfigureTwoFactorOptions(builder.Configuration);
+builder.Services.ConfigureSession();
 
 
 builder.Services.AddMvc();
@@ -39,7 +40,7 @@ app.MapControllerRoute(
 
 app.UseAuthentication();
 app.UseAuthorization();
-
+app.UseSession();
 
 app.Run();
 
