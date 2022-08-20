@@ -267,7 +267,27 @@ namespace NetCoreIdentity.Controllers
         [HttpPost]
         public async Task<IActionResult> TwoFactorWithAuthenticator(AuthenticatorViewModel authenticatorVM)
         {
-            return View();
+            var verificationCode = authenticatorVM.VerificationCode.Replace(" ", string.Empty).Replace("-", string.Empty);
+
+            var is2FATokenValid = await _userManager.VerifyTwoFactorTokenAsync(CurrentUser, _userManager.Options.Tokens.AuthenticatorTokenProvider, verificationCode);
+
+            if (is2FATokenValid)
+            {
+                CurrentUser.TwoFactorEnabled = true;
+                CurrentUser.TwoFactor = (sbyte)TwoFactor.MicrosoftGoogle;
+
+                var recoveryCodes = await _userManager.GenerateNewTwoFactorRecoveryCodesAsync(CurrentUser, 5);
+
+                TempData["recoveryCodes"] = recoveryCodes;
+                TempData["message"] = "İki adımlı kimlik doğrulama tipiniz Microsoft/Google Authenticator olarak belirlenmiştir.";
+
+                return RedirectToAction("TwoFactorAuth");
+            }
+            else
+            {
+                ModelState.AddModelError("", "Girdiğiniz doğrulama kodu yanlıştır");
+                return View(authenticatorVM);
+            }
         }
 
         #endregion
