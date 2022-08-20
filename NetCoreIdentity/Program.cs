@@ -15,6 +15,7 @@ builder.Services.ConfigureExternalLogin(builder.Configuration);
 builder.Services.ConfigureAddIdentityServer4();
 builder.Services.ConfigureCookieAuthenticationOptions();
 builder.Services.ConfigureAddScoped();
+builder.Services.ConfigureTwoFactorOptions(builder.Configuration);
 
 
 builder.Services.AddMvc();

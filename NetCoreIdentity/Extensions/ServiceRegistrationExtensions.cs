@@ -114,5 +114,10 @@ namespace NetCoreIdentity.Extensions
                     opt.ClientSecret = configuration["Authentication:Microsoft:ClientSecret"];
                 });
         }
+
+        public static void ConfigureTwoFactorOptions(this IServiceCollection services, IConfiguration configuration)
+        {
+            services.Configure<TwoFactorOptions>(configuration.GetSection("TwoFactorOptions"));
+        }
     }
 }
