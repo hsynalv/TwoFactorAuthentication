@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using NetCoreIdentity.AuthorizationHelpers;
 using NetCoreIdentity.CustomValidation;
 using NetCoreIdentity.Models;
+using NetCoreIdentity.TwoFactorServices;
 
 namespace NetCoreIdentity.Extensions
 {
@@ -85,6 +86,8 @@ namespace NetCoreIdentity.Extensions
         public static void ConfigureAddScoped(this IServiceCollection services)
         {
             services.AddScoped<IClaimsTransformation, ClaimProvider.ClaimProvider>();
+            services.AddScoped<TwoFactorService>();
+
         }
 
         public static void ConfigureAddTransit(this IServiceCollection services)
