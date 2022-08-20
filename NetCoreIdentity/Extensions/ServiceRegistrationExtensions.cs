@@ -104,6 +104,11 @@ namespace NetCoreIdentity.Extensions
                 {
                     opt.ClientId = configuration["Authentication:Google:ClientId"];
                     opt.ClientSecret = configuration["Authentication:Google:ClientSecret"];
+                })
+                .AddMicrosoftAccount(opt =>
+                {
+                    opt.ClientId = configuration["Authentication:Microsoft:ClientId"];
+                    opt.ClientSecret = configuration["Authentication:Microsoft:ClientSecret"];
                 });
         }
     }

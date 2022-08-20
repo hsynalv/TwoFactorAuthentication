@@ -32,8 +32,11 @@
                 </div>
             </form>
             <div class="mt-2">
-                <a class="btn btn-info btn-block" asp-action="FacebookLogin">Facebook ile giriş yap</a>
-                <a class="btn btn-info btn-block" asp-action="GoogleLogin">Google ile giriş yap</a>
+                <div style="display: grid">
+                    <a class="btn btn-info btn-block" asp-action="FacebookLogin">Facebook ile giriş yap</a>
+                    <a class="btn btn-info btn-block mt-2" asp-action="GoogleLogin">Google ile giriş yap</a>
+                    <a class="btn btn-info btn-block mt-2" asp-action="MicrosoftLogin">Microsoft ile giriş yap</a>
+                </di>
                 <a asp-action="ResetPassword" class="btn btn-link">Şifremi Unuttum</a>
             </div>
         </div>

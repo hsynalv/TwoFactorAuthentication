@@ -267,6 +267,16 @@ namespace NetCoreIdentity.Controllers
 
             return new ChallengeResult("Google", properties);
         }
+
+        public IActionResult MicrosoftLogin(string ReturnUrl)
+
+        {
+            string RedirectUrl = Url.Action("ExternalResponse", "Home", new { ReturnUrl = ReturnUrl });
+
+            var properties = _signInManager.ConfigureExternalAuthenticationProperties("Microsoft", RedirectUrl);
+
+            return new ChallengeResult("Microsoft", properties);
+        }
         
         #endregion
 
@@ -279,7 +289,7 @@ namespace NetCoreIdentity.Controllers
             }
             else
             {
-                SignInResult result = await _signInManager.ExternalLoginSignInAsync(info.LoginProvider, info.ProviderKey, true);
+                Microsoft.AspNetCore.Identity.SignInResult result = await _signInManager.ExternalLoginSignInAsync(info.LoginProvider, info.ProviderKey, true);
 
                 if (result.Succeeded)
                 {
@@ -305,27 +315,41 @@ namespace NetCoreIdentity.Controllers
                         user.UserName = info.Principal.FindFirst(ClaimTypes.Email).Value;
                     }
 
-                    IdentityResult createResult = await _userManager.CreateAsync(user);
+                    AppUser user2 = await _userManager.FindByEmailAsync(user.Email);
 
-                    if (createResult.Succeeded)
+                    if (user2 == null)
                     {
-                        IdentityResult loginResult = await _userManager.AddLoginAsync(user, info);
+                        IdentityResult createResult = await _userManager.CreateAsync(user);
 
-                        if (loginResult.Succeeded)
+                        if (createResult.Succeeded)
                         {
-                            //     await signInManager.SignInAsync(user, true);
+                            IdentityResult loginResult = await _userManager.AddLoginAsync(user, info);
 
-                            await _signInManager.ExternalLoginSignInAsync(info.LoginProvider, info.ProviderKey, true);
-                            return Redirect(ReturnUrl);
+                            if (loginResult.Succeeded)
+                            {
+                                //     await signInManager.SignInAsync(user, true);
+
+                                await _signInManager.ExternalLoginSignInAsync(info.LoginProvider, info.ProviderKey, true);
+
+                                return Redirect(ReturnUrl);
+                            }
+                            else
+                            {
+                                AddModelError(loginResult);
+                            }
                         }
                         else
                         {
-                            AddModelError(loginResult);
+                            AddModelError(createResult);
                         }
                     }
                     else
                     {
-                        AddModelError(createResult);
+                        IdentityResult loginResult = await _userManager.AddLoginAsync(user2, info);
+
+                        await _signInManager.ExternalLoginSignInAsync(info.LoginProvider, info.ProviderKey, true);
+
+                        return Redirect(ReturnUrl);
                     }
                 }
             }
