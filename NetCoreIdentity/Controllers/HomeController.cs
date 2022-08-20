@@ -5,6 +5,7 @@ using NetCoreIdentity.Enums;
 using NetCoreIdentity.Helper;
 using NetCoreIdentity.Models;
 using NetCoreIdentity.Models.ViewModel;
+using NetCoreIdentity.TwoFactorServices;
 using SignInResult = Microsoft.AspNetCore.Identity.SignInResult;
 
 namespace NetCoreIdentity.Controllers
@@ -13,8 +14,14 @@ namespace NetCoreIdentity.Controllers
     {
         private LoginViewModel _loginViewModel;
 
-        public HomeController(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager) : base(userManager, signInManager)
+        private readonly TwoFactorService _twoFactorService;
+
+        private readonly EmailSender _emailSender;
+
+        public HomeController(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager, TwoFactorService twoFactorService, EmailSender emailSender) : base(userManager, signInManager)
         {
+            _twoFactorService = twoFactorService;
+            _emailSender = emailSender;
         }
 
         public IActionResult Index()
@@ -385,6 +392,18 @@ namespace NetCoreIdentity.Controllers
             switch ((TwoFactor)user.TwoFactor)
             {
                 case TwoFactor.MicrosoftGoogle:
+                    break;
+                case TwoFactor.Email:
+
+                    if (_twoFactorService.TimeLeft(HttpContext) == 0)
+                    {
+                        return RedirectToAction("Login");
+                    }
+
+                    ViewBag.timeLeft = _twoFactorService.TimeLeft(HttpContext);
+
+                    HttpContext.Session.SetString("codeverification", _emailSender.Send(user.Email));
+
                     break;
             }
 
