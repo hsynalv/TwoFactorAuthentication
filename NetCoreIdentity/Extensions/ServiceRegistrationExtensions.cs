@@ -88,6 +88,7 @@ namespace NetCoreIdentity.Extensions
             services.AddScoped<IClaimsTransformation, ClaimProvider.ClaimProvider>();
             services.AddScoped<TwoFactorService>();
             services.AddScoped<EmailSender>();
+            services.AddScoped<SmsSender>();
 
         }
 

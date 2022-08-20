@@ -15,13 +15,14 @@ namespace NetCoreIdentity.Controllers
         private LoginViewModel _loginViewModel;
 
         private readonly TwoFactorService _twoFactorService;
-
+        private readonly SmsSender _smsSender;
         private readonly EmailSender _emailSender;
 
-        public HomeController(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager, TwoFactorService twoFactorService, EmailSender emailSender) : base(userManager, signInManager)
+        public HomeController(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager, TwoFactorService twoFactorService, EmailSender emailSender, SmsSender smsSender) : base(userManager, signInManager)
         {
             _twoFactorService = twoFactorService;
             _emailSender = emailSender;
+            _smsSender = smsSender;
         }
 
         public IActionResult Index()
@@ -408,6 +409,17 @@ namespace NetCoreIdentity.Controllers
 
                     HttpContext.Session.SetString("codeVerification", _emailSender.Send(user.Email));
 
+                    break;
+                case TwoFactor.Phone:
+
+                    if (_twoFactorService.TimeLeft(HttpContext) == 0)
+                    {
+                        return RedirectToAction("Login");
+                    }
+
+                    ViewBag.timeLeft = _twoFactorService.TimeLeft(HttpContext);
+
+                    HttpContext.Session.SetString("codeVerification", _smsSender.Send(user.PhoneNumber));
                     break;
             }
 
