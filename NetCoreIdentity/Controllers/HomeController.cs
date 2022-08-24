@@ -80,7 +80,7 @@ namespace NetCoreIdentity.Controllers
                             {
                                 HttpContext.Session.Remove("currentTime");
                             }
-                            return RedirectToAction("TwoFactorLogIn", "Home", new { ReturnUrl = TempData["ReturnUrl"].ToString() });
+                            return RedirectToAction("TwoFactorLogIn", "Home", new { ReturnUrl = TempData["retunUrl"].ToString() });
                         }
                         else
                         {

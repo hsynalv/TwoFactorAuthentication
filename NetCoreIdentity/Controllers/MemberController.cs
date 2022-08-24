@@ -93,7 +93,7 @@ namespace NetCoreIdentity.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> UserEdit(UserViewModel userViewModel, IFormFile userPicture = null)
+        public async Task<IActionResult> UserEdit(UserViewModel userViewModel, IFormFile userPicture)
         {
             ModelState.Remove("Password");
             ViewBag.Gender = new SelectList(Enum.GetNames(typeof(Gender)));
@@ -179,7 +179,7 @@ namespace NetCoreIdentity.Controllers
             return View();
         }
 
-        [Authorize(Roles="Super Admin",Policy = "ViolencePolicy")]
+        [Authorize(Policy = "ViolencePolicy")]
         public IActionResult ViolancePage()
         {
             return View();
@@ -232,7 +232,14 @@ namespace NetCoreIdentity.Controllers
 
                     CurrentUser.TwoFactorEnabled = true;
                     CurrentUser.TwoFactor = (sbyte)TwoFactor.Email;
-                    TempData["message"] = "İki adımlı kimlik doğrulama tipimiz email olarak belirlenmiştir";
+                    TempData["message"] = "İki adımlı kimlik doğrulama tipiniz email olarak belirlenmiştir";
+
+                    break;
+                case TwoFactor.Phone:
+
+                    CurrentUser.TwoFactorEnabled = true;
+                    CurrentUser.TwoFactor = (sbyte)TwoFactor.Phone;
+                    TempData["message"] = "İki adımlı kimlik doğrulama tipiniz phone olarak belirlenmiştir";
 
                     break;
                 
